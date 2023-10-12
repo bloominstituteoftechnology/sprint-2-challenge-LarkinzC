@@ -88,10 +88,37 @@
         //    * If the profile is active but it has a `reason` prop, return the string "confirm status manually"
         //    * If the profile is **missing** an `active` prop, return the string "impossible to ascertain status"
         // 🌟 HINT: to confirm the existence of a prop, check that its value is not undefined
+        
+        if (!profile.hasOwnProperty('active')) {
+    return "impossible to ascertain status";
+  }
+
+  if (profile.active) {
+    if (profile.hasOwnProperty('reason')) {
+      return "confirm status manually";
+    } else {
+      profile.active = false;
+      if (reason) {
+        profile.reason = reason;
       }
+    }
+  } else {
+    if (!profile.hasOwnProperty('reason')) {
+      return "confirm status manually";
+    } else {
+      delete profile.reason;
+      profile.active = true;
+    }
+  }
+
+  return profile;
+}
+
+
+      
 
       // 👉 CHALLENGE 2
-      function mineSweeper(subArr, x, y) {
+      function mineSweeper(grid, x, y) {
         // 🧠 mineSweeper takes a grid as its first argument, and coordinates x and y as the second and third args
         //  The grid is an array of arrays in the following format: [["🟥","🟦","🟥"],["🟦","🟥","🟥"],["🟥","🟦","🟦"]]
         //  Each subarray is a row of the grid, the first subarray being the top row:
@@ -113,6 +140,18 @@
         if (x < 1 || x > 3 || y < 1 || y > 3) {
           return "invalid coordinates";
         }
+        
+        x--
+        y--
+        const square = grid[y][x]
+
+        if (square === "🟥") {
+          return "🟥 💀";
+        } else if (square === "🟦") {
+          return "🟦 🥳";
+        } else {
+          return "invalid square";
+        }
       }
 
       // 👉 CHALLENGE 3
@@ -125,6 +164,24 @@
         // 🧠 Edge cases:
         //    * If a property name exceeds 9 characters, return the string "shorten all prop names to 9 chars or less"
         // 🌟 HINT: careful not to perform any unintended changes on the object
+        if (typeof obj !== "object" || obj === null) {
+          return obj;
+        }
+        const resultObj = {};
+        for (const idx in obj) {
+          if (idx.length > 9) {
+            return "shorten all prop names to 9 chars or less";
+          }
+          const value = obj[idx];
+          if (value === 0) {
+            resultObj[idx] = false;
+          } else if (value === 1) {
+            resultObj[idx] = true;
+          } else if (value !== null) {
+            resultObj[idx] = value;
+          }
+        }
+        return resultObj;
       }
 
       // 👉 CHALLENGE 4
@@ -140,12 +197,19 @@
         //    scrub("aces high", ["high", "aces", "hearts"]) // returns "xxxx xxxx"
         //    scrub("", ["high", "aces""]) // returns ""
         // 🌟 HINT: useful array methods to use are `push`, `indexOf`, `split`, `join`
-        const result = [];
-        const words = text.split(" ");
-
-        for (idx = 0; idx < text.length; idx++) {
-          let forbWord = forbidden[idx];
+        if (text === '' || forbidden.length === 0){
+          return text
         }
+        const words = text.split(' ')
+        
+        for (let i=0; i < words.length; i++) {
+          if (forbidden.indexOf(words[i]) !== -1) {
+            words[i] = 'x'.repeat(words[i].length)
+          }
+        }
+        const scrubbedText = words.join(' ')
+
+        return scrubbedText
       }
 
       // 👉 CHALLENGE 5
